@@ -1,0 +1,19 @@
+{
+  "name": "AIグルコン・講座 現在地チェック",
+  "short_name": "AIグルコン",
+  "lang": "ja",
+  "dir": "ltr",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#faf7ee",
+  "theme_color": "#1a2a4a",
+  "description": "AIグルコン・講座 本番までにやることを1ページにまとめたチェックリスト。進捗は端末内に保存され、外部に送信されません。",
+  "categories": ["education", "productivity"],
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

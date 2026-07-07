@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+<title>AIグルコン・講座 現在地チェック｜西田光弘</title>
+<meta name="theme-color" content="#1a2a4a">
+<meta name="description" content="AIグルコン・講座 本番までにやることを1ページにまとめたチェックリスト。進捗は端末内に保存され、外部に送信されません。">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="AIグルコン">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f4efe4; --card:#fbf8f1; --ink:#2c2620; --soft:#6f665a; --line:#e3dac9;
+  --navy:#1a2a4a; --ochre:#bd8a2c; --terra:#b5562f; --green:#4f6f52; --plum:#6e3f5f; --brown:#8a5a3c;
+  --safe-top:env(safe-area-inset-top,0px);
+  --safe-bottom:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+html,body{margin:0; padding:0; height:100%;}
+body{
+  background:var(--paper); color:var(--ink);
+  font-family:'Zen Kaku Gothic New',sans-serif; font-size:15px; line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+  overscroll-behavior-y:none;
+}
+button{font-family:inherit; color:inherit; cursor:pointer;}
+a{color:var(--ochre); text-decoration:none;}
+.app{max-width:680px; margin:0 auto; min-height:100%; display:flex; flex-direction:column;}
+
+/* ===== ヘッダー ===== */
+header.top{
+  position:sticky; top:0; z-index:20;
+  background:var(--card); border-bottom:1px solid var(--line);
+  padding:calc(var(--safe-top) + 12px) 18px 12px;
+}
+header.top::before{
+  content:""; position:absolute; left:0; top:0; right:0; height:4px;
+  background:linear-gradient(90deg,
+    var(--navy) 0 16.6%,
+    var(--ochre) 16.6% 33.2%,
+    var(--green) 33.2% 49.8%,
+    var(--terra) 49.8% 66.4%,
+    var(--brown) 66.4% 83%,
+    var(--plum) 83% 100%);
+}
+.top-row{display:flex; align-items:center; gap:14px;}
+.ring{flex:none;}
+.ring svg{transform:rotate(-90deg);}
+.ring .track{stroke:var(--line);}
+.ring .prog{stroke:var(--ochre); stroke-linecap:round; transition:stroke-dashoffset .5s ease, stroke .3s;}
+.ring .pct{font-family:'Shippori Mincho',serif; font-weight:800; fill:var(--ink);}
+.head-text{flex:1; min-width:0;}
+.kicker{font-size:9.5px; letter-spacing:.28em; text-transform:uppercase; color:var(--terra); font-weight:700;}
+.head-text h1{font-family:'Shippori Mincho',serif; font-weight:800; font-size:19px; margin:1px 0 3px; letter-spacing:.02em;}
+.head-meta{display:flex; flex-wrap:wrap; gap:4px 12px; font-size:12px; color:var(--soft);}
+.head-meta b{color:var(--ink); font-weight:700;}
+.head-meta .fracbox{
+  display:inline-flex; align-items:center; gap:5px;
+  background:rgba(26,42,74,.10); color:var(--navy);
+  font-weight:700; font-size:12px; padding:2px 9px; border-radius:999px;
+}
+.head-actions{margin-top:8px; display:flex; gap:8px; flex-wrap:wrap;}
+.head-actions .minibtn{
+  border:1px solid var(--line); background:var(--paper); border-radius:7px;
+  padding:5px 10px; font-size:11.5px; font-weight:700; color:var(--soft);
+}
+.head-actions .minibtn:active{transform:scale(.98);}
+
+/* ===== コンテンツ ===== */
+main{flex:1; padding:16px 16px 100px;}
+.lead{
+  background:var(--card); border:1px solid var(--line); border-radius:10px;
+  padding:14px 16px; margin-bottom:14px; font-size:13.5px; color:var(--ink); line-height:1.75;
+}
+.lead b{color:var(--navy); font-weight:700;}
+.lead .muted{color:var(--soft); font-size:12px; display:block; margin-top:6px;}
+
+/* ===== ブロック ===== */
+.block{
+  margin-bottom:12px; border:1px solid var(--line); border-radius:10px; overflow:hidden;
+  background:var(--card); box-shadow:0 12px 28px -26px rgba(44,38,32,.5);
+}
+.block-head{
+  display:flex; align-items:baseline; gap:9px;
+  padding:11px 15px; color:#fff;
+}
+.block-head .t{font-family:'Shippori Mincho',serif; font-weight:700; font-size:16px; letter-spacing:.04em;}
+.block-head .ctx{font-size:11px; opacity:.93; font-weight:500;}
+.block-head .bcount{margin-left:auto; font-size:11px; font-weight:700; opacity:.95;}
+.block[data-color="navy"] .block-head{background:var(--navy);}
+.block[data-color="ochre"] .block-head{background:var(--ochre);}
+.block[data-color="green"] .block-head{background:var(--green);}
+.block[data-color="terra"] .block-head{background:var(--terra);}
+.block[data-color="brown"] .block-head{background:var(--brown);}
+.block[data-color="plum"] .block-head{background:var(--plum);}
+
+.rows{padding:2px 0;}
+.row{
+  display:grid; grid-template-columns:32px 1fr auto; gap:12px; align-items:start;
+  padding:12px 15px; border-top:1px solid #f0ebe0; text-align:left;
+}
+.row:first-child{border-top:none;}
+.row.on{background:rgba(79,111,82,.05);}
+.cb{
+  width:26px; height:26px; border:2px solid var(--ink); border-radius:7px;
+  display:inline-flex; align-items:center; justify-content:center; flex:none;
+  transition:.14s ease; position:relative; background:var(--paper); margin-top:1px;
+  cursor:pointer;
+}
+.cb svg{
+  width:16px; height:16px; stroke:var(--card); stroke-width:3.4; fill:none;
+  stroke-linecap:round; stroke-linejoin:round;
+  opacity:0; transform:scale(.4); transition:.16s ease;
+}
+.row.on .cb{background:var(--ink); border-color:var(--ink); transform:scale(1.04);}
+.row.on .cb svg{opacity:1; transform:scale(1);}
+.body-wrap{min-width:0;}
+.name{font-weight:600; line-height:1.35; color:var(--ink);}
+.row.on .name{color:var(--soft); text-decoration:line-through;}
+.note{font-size:12px; color:var(--soft); margin-top:4px; line-height:1.55;}
+.note code{
+  background:rgba(189,138,44,.10); color:var(--ochre); font-family:inherit;
+  padding:1px 5px; border-radius:4px; font-size:11px; font-weight:700;
+}
+.open-btn{
+  align-self:start; margin-top:1px; white-space:nowrap;
+  border:1px solid var(--line); background:var(--paper); border-radius:7px;
+  padding:5px 10px; font-size:12px; font-weight:700; color:var(--ochre);
+  text-decoration:none; display:inline-flex; align-items:center; gap:3px;
+}
+.open-btn:active{transform:scale(.97);}
+.multi-links{display:flex; flex-wrap:wrap; gap:5px; margin-top:6px;}
+.multi-links a{
+  border:1px solid var(--line); background:var(--paper); border-radius:6px;
+  padding:3px 8px; font-size:11px; font-weight:700; color:var(--ochre);
+}
+
+/* ===== フッター注意 ===== */
+.foot-note{
+  margin-top:24px; padding:16px; border:1px dashed var(--line); border-radius:9px;
+  font-size:11.5px; color:var(--soft); line-height:1.7; background:var(--card);
+}
+.foot-note b{color:var(--ink);}
+
+/* ===== トースト ===== */
+.toast{
+  position:fixed; left:50%; bottom:calc(var(--safe-bottom) + 24px); transform:translateX(-50%) translateY(20px);
+  background:var(--ink); color:var(--card); font-size:13px; font-weight:600;
+  padding:10px 18px; border-radius:999px; opacity:0; pointer-events:none;
+  transition:.22s ease; z-index:50; box-shadow:0 10px 24px -10px rgba(0,0,0,.5);
+}
+.toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+
+/* ===== モーダル ===== */
+.modal{
+  position:fixed; inset:0; background:rgba(20,24,47,.55); z-index:40;
+  display:none; align-items:center; justify-content:center; padding:24px;
+}
+.modal.on{display:flex;}
+.modal-card{
+  background:var(--card); border-radius:12px; padding:22px 22px 18px;
+  max-width:360px; width:100%; box-shadow:0 20px 60px rgba(0,0,0,.4);
+}
+.modal-card h2{font-family:'Shippori Mincho',serif; margin:0 0 8px; font-size:17px; color:var(--ink);}
+.modal-card p{margin:0 0 16px; font-size:13.5px; color:var(--soft); line-height:1.65;}
+.modal-btns{display:flex; gap:10px; justify-content:flex-end;}
+.modal-btns button{
+  border:1px solid var(--line); background:var(--paper); border-radius:8px;
+  padding:8px 14px; font-weight:700; font-size:13px;
+}
+.modal-btns button.primary{background:var(--terra); color:#fff; border-color:var(--terra);}
+</style>
+</head>
+<body>
+<div class="app">
+
+<header class="top">
+  <div class="top-row">
+    <div class="ring" id="ring"></div>
+    <div class="head-text">
+      <div class="kicker">AIグルコン・講座 現在地チェック</div>
+      <h1>本番までに整えるもの</h1>
+      <div class="head-meta">
+        <span class="fracbox"><span id="fracDone">0</span> / <span id="fracAll">0</span> 項目</span>
+        <span id="lastUpdated" class="muted"></span>
+      </div>
+      <div class="head-actions">
+        <button class="minibtn" id="resetBtn">全てのチェックをリセット</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<div class="lead">
+これは <b>AIグルコン・講座 本番までにやること</b> を1ページにまとめたチェックリストです。<br>
+上から順にスキャンして、まだ埋まっていないところだけチェックしてください。「もう終わってる」項目は飛ばして構いません。
+<span class="muted">🔒 チェックはこの端末のブラウザだけに保存されます（外部送信なし）。次に開いても続きから見えます。</span>
+</div>
+
+<div id="blocks"></div>
+
+<div class="foot-note">
+このページは AIグルコン・講座 本番までの「1枚地図」です。迷ったらここに戻ってきてください。<br>
+<b>Mits／西田光弘</b>
+</div>
+
+</main>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="modal" id="resetModal">
+  <div class="modal-card">
+    <h2>全てのチェックをリセットしますか？</h2>
+    <p>この端末に保存されている進捗が消えます。この操作は取り消せません。</p>
+    <div class="modal-btns">
+      <button id="resetCancel">やめる</button>
+      <button id="resetOk" class="primary">リセットする</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============ データ定義 ============
+const BLOCKS = [
+  {
+    id: "env",
+    color: "navy",
+    title: "🛠 環境を整える",
+    ctx: "土台。まず動く状態にする。",
+    items: [
+      {
+        id: "env-login",
+        name: "会員サイトにログインし、パスワードを自分のものに変更した",
+        note: "初期パスワードは購入時案内メールに記載。",
+        links: [{ label: "会員サイトを開く", url: "https://change.7years.life/site/mxjeSnXmJDbO/" }]
+      },
+      {
+        id: "env-cc",
+        name: "Claude Code Max プランで動く状態になっている",
+        note: "コマンドを叩いて「>」で入力待ちになればOK。動かなければ環境構築講座へ。",
+        links: [{ label: "Claude Code 環境構築講座", url: "https://change.7years.life/members/mxjeSnXmJDbO/course/K3iQN5xF2OJU" }]
+      },
+      {
+        id: "env-discord-join",
+        name: "Discord サーバーに合流した",
+        note: "無期限・回数制限なしの招待リンク。",
+        links: [{ label: "Discord に合流", url: "https://discord.gg/Tx7KCvDnZN" }]
+      },
+      {
+        id: "env-discord-notif",
+        name: "Discord の通知【必須】設定を入れた",
+        note: "@メンション通知だけONで最低ライン。設定手順は画像つきガイドを参照。",
+        links: [
+          { label: "設定手順（画像つき）", url: "https://reports.7years.life/2026-06-27_discord-wishlist-and-roadmap.html" },
+          { label: "使い方（動画）", url: "https://change.7years.life/members/mxjeSnXmJDbO/course/MaXquphUqbjS/lesson/AlTdzsvWNW7Y" }
+        ]
+      },
+      {
+        id: "env-setup1",
+        name: "【必須】初期設定 を実行した",
+        note: "1本目。Claude Code の最初の設定。",
+        links: [{ label: "動画を開く", url: "https://change.7years.life/members/mxjeSnXmJDbO/course/MaXquphUqbjS/lesson/tjOIWZEK4EQG" }]
+      },
+      {
+        id: "env-setup2",
+        name: "【必須】初期設定-2 モデルと許可 を実行した",
+        note: "2本目。使うモデルと権限の設定。",
+        links: [{ label: "動画を開く", url: "https://change.7years.life/members/mxjeSnXmJDbO/course/MaXquphUqbjS/lesson/tZyIcULoEpCR" }]
+      },
+      {
+        id: "env-setup3",
+        name: "【必須】初期設定-3 フォルダ設定 を実行した",
+        note: "3本目。作業フォルダの土台。",
+        links: [{ label: "動画を開く", url: "https://change.7years.life/members/mxjeSnXmJDbO/course/MaXquphUqbjS/lesson/PwRf62JXsXr0" }]
+      }
+    ]
+  },
+  {
+    id: "map",
+    color: "ochre",
+    title: "📖 講座の地図を持つ",
+    ctx: "全体像。ここが分かると初回の理解が変わる。",
+    items: [
+      {
+        id: "map-syllabus",
+        name: "シラバスに目を通した（全4回・反転学習の運用まで）",
+        note: "目次だけでもOK。地図を持って本番に来る。",
+        links: [{ label: "シラバスを開く", url: "https://reports.7years.life/2026-07-05_ai-agent-management-syllabus.html" }]
+      },
+      {
+        id: "map-showa",
+        name: "「AI社員は昭和型体育会系で育てろ」動画を見た（7分38秒）",
+        note: "6つのAI癖（着手／完了／捏造／偽証／逆委任／健忘症）の入口。",
+        links: [{ label: "動画を開く", url: "https://change.7years.life/members/mxjeSnXmJDbO/course/MaXquphUqbjS/lesson/iSCjXKjZkWPB" }]
+      },
+      {
+        id: "map-4kai",
+        name: "全4回のテーマを頭に入れた",
+        note: "第1回=魂の設計 / 第2回=組織化 / 第3回=道具の整備 / 第4回=運用サイクル。",
+        links: []
+      }
+    ]
+  },
+  {
+    id: "hands",
+    color: "green",
+    title: "✍ 手を動かす",
+    ctx: "ワークシートと学習ロードマップで実際に手を動かす。",
+    items: [
+      {
+        id: "hands-ws0",
+        name: "ワークシート Block 0（現状スケッチ）を埋めた",
+        note: "使っているツール／顧客連絡経路／今月の3つの塊／自分と他人の境目。",
+        links: [{ label: "ワークシートを開く", url: "https://reports.7years.life/2026-07-05_ai-agent-context-worksheet.html" }]
+      },
+      {
+        id: "hands-ws12",
+        name: "ワークシート Block 1・2（自分と顧客のコアコンテキスト）を埋めた",
+        note: "うまく書けなくてOK。書けた分だけ置く。",
+        links: [{ label: "ワークシートを開く", url: "https://reports.7years.life/2026-07-05_ai-agent-context-worksheet.html" }]
+      },
+      {
+        id: "hands-ws34",
+        name: "ワークシート Block 3・4（業務フロー／AI優先順位）を埋めた",
+        note: "Block 4 に上がったタスク = 第3回で Skills 化する対象。",
+        links: [{ label: "ワークシートを開く", url: "https://reports.7years.life/2026-07-05_ai-agent-context-worksheet.html" }]
+      },
+      {
+        id: "hands-lm1",
+        name: "学習ロードマップ #lesson-1 を見た（第1回の下地）",
+        note: "Claude Code で何が動いているかの全体像。",
+        links: [{ label: "レッスンを開く", url: "https://change.7years.life/members/mxjeSnXmJDbO/course/N16CPRNuYfAd/lesson/rjUBwFknhXAc#lesson-1" }]
+      },
+      {
+        id: "hands-lm5-6",
+        name: "学習ロードマップ #lesson-5・#lesson-6 を見た（第2回の下地）",
+        note: "サブエージェントとハンズオン。",
+        links: [
+          { label: "#lesson-5", url: "https://change.7years.life/members/mxjeSnXmJDbO/course/N16CPRNuYfAd/lesson/rjUBwFknhXAc#lesson-5" },
+          { label: "#lesson-6", url: "https://change.7years.life/members/mxjeSnXmJDbO/course/N16CPRNuYfAd/lesson/rjUBwFknhXAc#lesson-6" }
+        ]
+      },
+      {
+        id: "hands-lm8",
+        name: "学習ロードマップ #lesson-8 を見た（脳と手を分けて動かす）",
+        note: "6つのAI癖への手立ての一つ。",
+        links: [{ label: "レッスンを開く", url: "https://change.7years.life/members/mxjeSnXmJDbO/course/N16CPRNuYfAd/lesson/rjUBwFknhXAc#lesson-8" }]
+      },
+      {
+        id: "hands-lm11",
+        name: "学習ロードマップ #lesson-11 を見た（第3回の下地）",
+        note: "freee 連携。外部ツールを AI に触らせる型として。",
+        links: [{ label: "レッスンを開く", url: "https://change.7years.life/members/mxjeSnXmJDbO/course/N16CPRNuYfAd/lesson/rjUBwFknhXAc#lesson-11" }]
+      },
+      {
+        id: "hands-skills",
+        name: "各種個別動画ーSkills編を見た",
+        note: "自分の仕事フローを AI に覚えさせる仕組み。",
+        links: [{ label: "動画を開く", url: "https://change.7years.life/members/mxjeSnXmJDbO/course/MaXquphUqbjS/lesson/lBwBWiSmANqs" }]
+      }
+    ]
+  },
+  {
+    id: "peers",
+    color: "terra",
+    title: "💬 仲間とつながる",
+    ctx: "Discord で書く場所と読む場所を分ける。詰まりは整えずそのまま貼る。",
+    items: [
+      {
+        id: "peers-tsumazuki",
+        name: "「⚠️ つまずき相談する」チャンネルの場所を知っている",
+        note: "詰まりを言語化して置く場所。整えてから、はやめる。Mits が動画で回答する。",
+        links: [{ label: "チャンネルを開く", url: "https://discord.com/channels/745242086751731802/1518379481138462780" }]
+      },
+      {
+        id: "peers-share",
+        name: "「💡 学んだ・できたことをシェアする」チャンネルの場所を知っている",
+        note: "うまくいったパターン／いかなかったパターン、両方の共有場所。",
+        links: [{ label: "チャンネルを開く", url: "https://discord.com/channels/745242086751731802/1518384671011115140" }]
+      },
+      {
+        id: "peers-koe",
+        name: "「📣 みんなの声」チャンネルの場所を知っている",
+        note: "やりたいこと・困りごと・要望を置く場所。",
+        links: [{ label: "チャンネルを開く", url: "https://discord.com/channels/745242086751731802/1518384672621596854" }]
+      },
+      {
+        id: "peers-first-post",
+        name: "Discord に一度、詰まりまたは気付きを投稿した",
+        note: "「まとめてから書く」のではなく、まとまっていない状態のまま貼る、が原則。",
+        links: []
+      }
+    ]
+  },
+  {
+    id: "day",
+    color: "brown",
+    title: "🎥 本番に持ってくるもの",
+    ctx: "第1回本番までに揃える。",
+    items: [
+      {
+        id: "day-paper",
+        name: "紙とペンを準備した",
+        note: "画面共有を見ながら手で書き取る箇所がある。",
+        links: []
+      },
+      {
+        id: "day-3tasks",
+        name: "自分の業務を3つ書き出したメモを用意した",
+        note: "Block 4（AI 優先順位）で選んだ3つでOK。第1回の題材になる。",
+        links: []
+      },
+      {
+        id: "day-worksheet",
+        name: "ワークシート（Block 0〜4）が埋まった状態で手元にある",
+        note: "埋まっていない箇所は第1回の対話素材になる。",
+        links: []
+      },
+      {
+        id: "day-pc",
+        name: "Claude Code が動く PC を用意している",
+        note: "動作確認の目安：「>」で待機／自分のフォルダで起動／簡単な指示に返事。",
+        links: []
+      },
+      {
+        id: "day-zoom",
+        name: "当日 Zoom URL は当日朝の LINE で届く（通知 ON にしている）",
+        note: "輪唱型なので、あなたの本番開始月に合わせた URL が届く。",
+        links: []
+      }
+    ]
+  },
+  {
+    id: "rev",
+    color: "plum",
+    title: "🔁 反転学習の使い方",
+    ctx: "各回の間の2週間で成果が決まる。",
+    items: [
+      {
+        id: "rev-flow",
+        name: "反転学習の流れを理解している",
+        note: "① 各回のあと手を動かす → ② 詰まりを ⚠️つまずき相談する に貼る → ③ 週後半に Mits が回答動画を上げる → ④ 次の回の前日に見て来る。",
+        links: []
+      },
+      {
+        id: "rev-consul",
+        name: "個別相談を1回、日程を押さえた／実施済み",
+        note: "AIグルコン・講座に含まれる個別相談は1回。未実施の方は本番までに予約。",
+        links: [{ label: "予約する", url: "https://change.7years.life/event/iC1u1OHqJWkc/register" }]
+      }
+    ]
+  }
+];
+
+// ============ 状態管理 ============
+const STORAGE_KEY = "aiglucon-checklist-v1";
+const CHECK_SVG = '<svg viewBox="0 0 24 24"><polyline points="4 12 10 18 20 6"/></svg>';
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return { checks: {}, updated: null };
+    const parsed = JSON.parse(raw);
+    return { checks: parsed.checks || {}, updated: parsed.updated || null };
+  } catch (e) {
+    return { checks: {}, updated: null };
+  }
+}
+
+function saveState(state) {
+  state.updated = new Date().toISOString();
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+let state = loadState();
+
+// ============ レンダリング ============
+function totalItemCount() {
+  return BLOCKS.reduce((n, b) => n + b.items.length, 0);
+}
+
+function doneCount() {
+  return Object.values(state.checks).filter(Boolean).length;
+}
+
+function renderRing() {
+  const total = totalItemCount();
+  const done = doneCount();
+  const pct = total === 0 ? 0 : Math.round((done / total) * 100);
+  const R = 26;
+  const C = 2 * Math.PI * R;
+  const offset = C * (1 - done / Math.max(total, 1));
+  const color = pct === 100 ? "var(--green)" : "var(--ochre)";
+  document.getElementById("ring").innerHTML = `
+    <svg width="64" height="64" viewBox="0 0 64 64">
+      <circle class="track" cx="32" cy="32" r="${R}" fill="none" stroke-width="6"></circle>
+      <circle class="prog" cx="32" cy="32" r="${R}" fill="none" stroke-width="6"
+              stroke-dasharray="${C.toFixed(2)}" stroke-dashoffset="${offset.toFixed(2)}"
+              style="stroke:${color}"></circle>
+      <text class="pct" x="32" y="37" text-anchor="middle" font-size="16">${pct}%</text>
+    </svg>
+  `;
+  document.getElementById("fracDone").textContent = done;
+  document.getElementById("fracAll").textContent = total;
+  if (state.updated) {
+    const d = new Date(state.updated);
+    const pad = n => String(n).padStart(2, "0");
+    document.getElementById("lastUpdated").textContent =
+      `最終更新 ${d.getFullYear()}/${pad(d.getMonth()+1)}/${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  } else {
+    document.getElementById("lastUpdated").textContent = "";
+  }
+}
+
+function renderBlocks() {
+  const html = BLOCKS.map(block => {
+    const doneN = block.items.filter(it => state.checks[it.id]).length;
+    const rowsHtml = block.items.map(it => {
+      const on = state.checks[it.id];
+      const linksHtml = it.links && it.links.length
+        ? (it.links.length === 1
+            ? `<a class="open-btn" href="${it.links[0].url}" target="_blank" rel="noopener">${it.links[0].label} →</a>`
+            : "")
+        : "";
+      const multiLinksHtml = (it.links && it.links.length > 1)
+        ? `<div class="multi-links">${it.links.map(l => `<a href="${l.url}" target="_blank" rel="noopener">${l.label} →</a>`).join("")}</div>`
+        : "";
+      return `
+        <div class="row ${on ? "on" : ""}" data-id="${it.id}">
+          <button class="cb" aria-label="チェック" data-toggle="${it.id}">${CHECK_SVG}</button>
+          <div class="body-wrap">
+            <div class="name">${it.name}</div>
+            ${it.note ? `<div class="note">${it.note}</div>` : ""}
+            ${multiLinksHtml}
+          </div>
+          ${linksHtml}
+        </div>
+      `;
+    }).join("");
+    return `
+      <div class="block" data-color="${block.color}">
+        <div class="block-head">
+          <span class="t">${block.title}</span>
+          <span class="ctx">${block.ctx}</span>
+          <span class="bcount">${doneN} / ${block.items.length}</span>
+        </div>
+        <div class="rows">${rowsHtml}</div>
+      </div>
+    `;
+  }).join("");
+  document.getElementById("blocks").innerHTML = html;
+  // bind toggles
+  document.querySelectorAll(".cb[data-toggle]").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const id = btn.dataset.toggle;
+      state.checks[id] = !state.checks[id];
+      saveState(state);
+      renderRing();
+      renderBlocks();
+      if (state.checks[id]) showToast("チェックしました");
+    });
+  });
+}
+
+// ============ トースト ============
+let toastTimer = null;
+function showToast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove("show"), 1400);
+}
+
+// ============ リセット ============
+document.getElementById("resetBtn").addEventListener("click", () => {
+  document.getElementById("resetModal").classList.add("on");
+});
+document.getElementById("resetCancel").addEventListener("click", () => {
+  document.getElementById("resetModal").classList.remove("on");
+});
+document.getElementById("resetOk").addEventListener("click", () => {
+  state = { checks: {}, updated: null };
+  localStorage.removeItem(STORAGE_KEY);
+  document.getElementById("resetModal").classList.remove("on");
+  renderRing();
+  renderBlocks();
+  showToast("リセットしました");
+});
+
+// ============ 初期描画 ============
+renderRing();
+renderBlocks();
+</script>
+
+</body>
+</html>
