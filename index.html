@@ -44,12 +44,11 @@ header.top{
 header.top::before{
   content:""; position:absolute; left:0; top:0; right:0; height:4px;
   background:linear-gradient(90deg,
-    var(--navy) 0 16.6%,
-    var(--ochre) 16.6% 33.2%,
-    var(--green) 33.2% 49.8%,
-    var(--terra) 49.8% 66.4%,
-    var(--brown) 66.4% 83%,
-    var(--plum) 83% 100%);
+    var(--navy) 0 20%,
+    var(--ochre) 20% 40%,
+    var(--green) 40% 60%,
+    var(--terra) 60% 80%,
+    var(--plum) 80% 100%);
 }
 .top-row{display:flex; align-items:center; gap:14px;}
 .ring{flex:none;}
@@ -400,44 +399,6 @@ const BLOCKS = [
         id: "peers-first-post",
         name: "Discord に一度、詰まりまたは気付きを投稿した",
         note: "「まとめてから書く」のではなく、まとまっていない状態のまま貼る、が原則。",
-        links: []
-      }
-    ]
-  },
-  {
-    id: "day",
-    color: "brown",
-    title: "🎥 本番に持ってくるもの",
-    ctx: "",
-    items: [
-      {
-        id: "day-paper",
-        name: "紙とペンを準備した",
-        note: "画面共有を見ながら手で書き取る箇所がある。",
-        links: []
-      },
-      {
-        id: "day-3tasks",
-        name: "自分の業務を3つ書き出したメモを用意した",
-        note: "Block 4（AI 優先順位）で選んだ3つでOK。第1回の題材になる。",
-        links: []
-      },
-      {
-        id: "day-worksheet",
-        name: "ワークシート（Block 0〜4）が埋まった状態で手元にある",
-        note: "埋まっていない箇所は第1回の対話素材になる。",
-        links: []
-      },
-      {
-        id: "day-pc",
-        name: "Claude Code が動く PC を用意している",
-        note: "動作確認の目安：「>」で待機／自分のフォルダで起動／簡単な指示に返事。",
-        links: []
-      },
-      {
-        id: "day-zoom",
-        name: "当日 Zoom URL は当日朝の LINE で届く（通知 ON にしている）",
-        note: "輪唱型なので、あなたの本番開始月に合わせた URL が届く。",
         links: []
       }
     ]
